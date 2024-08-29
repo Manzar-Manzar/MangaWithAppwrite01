@@ -52,20 +52,19 @@ export class AuthService {
         }
     }
 
-    async admin() {
-        try {
-            const account = await this.account.get(); // Correct usage with `await`
-
-            if (account && account.labels && account.labels.includes('admin')) {
-                window.location.href = '/admin'; // Use window.location.href for redirection
-            } else {
-                window.location.href = '/dashboard';
-            }
-        } catch (err) {
-            console.log(`Admin check error: ${err}`);
-            window.location.href = '/login';
-        }
+    async admin(userData) {
+  try {
+    if (userData.labels.includes('admin')) {
+      return true;
+    } else {
+      return false;
     }
+  } catch (err) {
+    console.log(`Admin check error: ${err}`);
+    return false;
+  }
+}
+
 }
 
 const authService = new AuthService();

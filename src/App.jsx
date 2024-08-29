@@ -6,12 +6,9 @@ import { login, logout } from "./store/authSlice.js";
 import { Header } from './user/components/index.js';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Footer } from './user/components/index.js';
-import UserHeader from './user/components/Header/UserHeader.jsx';
-import AdminHeader from './user/components/Header/AdminHeader.jsx';
 
 function App() {
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false); // Correct usage of useState
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
@@ -21,14 +18,9 @@ function App() {
       .then((userData) => {
         if (userData) {
           dispatch(login({ userData }));
-          if (authService.Admin(userData)) {
-            setIsAdmin(true); 
-          } else {
-            setIsAdmin(false);
-          }
         } else {
           dispatch(logout());
-          setIsAdmin(false); // Ensure admin is reset if no user
+          
         }
       })
       .finally(() => setLoading(false));
@@ -36,9 +28,9 @@ function App() {
 
   return !loading ? (
     <>
-      {isAdmin ? <UserHeader /> : <AdminHeader />}
+      <Header /> 
       <Outlet />
-      {!isAdmin && <Footer />} {/* Conditionally render Footer based on isAdmin */}
+     <Footer />
     </>
   ) : null;
 }

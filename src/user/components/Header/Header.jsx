@@ -1,49 +1,113 @@
-import { useEffect, useState } from 'react';
-import { useDispatch } from "react-redux";
-import authService from "../../../appwrite/auth.js";
-import { login, logout } from "../../../store/authSlice.js";
-import { Outlet, useNavigate } from 'react-router-dom';
-import AdminHeader from './AdminHeader.jsx';
-import UserHeader from './UserHeader.jsx';
+import React from 'react'
+import {Container, Logo, LogoutBtn} from '../index'
+import { Link } from 'react-router-dom'
+import {useSelector} from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 function Header() {
-    const [loading, setLoading] = useState(true);
-    const [Admin, setAdmin] = useState(false); // Correct usage of useState
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+  const authStatus = useSelector((state) => state.auth.status)
+  const navigate = useNavigate()
 
-    useEffect(() => {
-        authService.getCurrentUser()
-            .then((userData) => {
-                if (userData) {
-                    dispatch(login({ userData }));
+  const navItems = [
+    {
+        name: 'Home',
+        slug: "/",
+        active: true
+    },
+    {
+        name: "Browse",
+        slug: "/browse",
+        active: authStatus,
+    },
+    {
+        name: "About",
+        slug: "/about",
+        active: true,
+    },
+    {
+        name: "Contact",
+        slug: "/contact",
+        active: true,
+    },
+    {
+        name: "Login",
+        slug: "/login",
+        active: !authStatus,
+    },
+    {
+        name: "Signup",
+        slug: "/signup",
+        active: !authStatus,
+    },
+    {
+        name: "All mangas",
+        slug:"/mangas",
+        active: true,
+    },
+    {
+        name: "Add mangas", // When clicked on the manga card, there should be add, update chapter, and delete chapter
+        slug:"/mangas",
+        active: true,
+    },
+    {
+        name: "Update Manga", // to update the manga title and other details
+        slug:"/updateManga",
+        active: true,
+    },
+    {
+        name: "Delete Manga",
+        slug:"/deleteManga",
+        active: true,
+    },
+    {
+        name: "Add Chapter",
+        slug:"/addChapter",
+        active: true,
+    },
+    {
+        name: "Update Chapter",
+        slug:"/updateChapter",
+        active: true,
+    },
+    {
+        name: "Delete Chapter",
+        slug:"/deleteChapter",
+        active: true,
+    },
+  ]
 
-                    if (userData.role === "admin") {
-                        setIsAdmin(true); // Use the state setter function
-                        navigate("/admin"); // Navigate to admin dashboard if admin
-                    } else {
-                        setIsAdmin(false); // Ensure isAdmin is reset if not admin
-                        navigate("/"); // Navigate to user dashboard if not admin
-                    }
-                } else {
-                    dispatch(logout());
-                    setAdmin(false); // Ensure isAdmin is reset if no user
-                }
-            })
-            .catch((error) => {
-                console.error("Error fetching current user:", error);
-                dispatch(logout()); // Log out if there's an error
-            })
-            .finally(() => setLoading(false));
-    }, [dispatch, navigate]);
 
-    if (loading) {
-        return <div>Loading...</div>; // Loading indicator while fetching user data
-    }
+  return (
+    <header className='py-3 shadow bg-gray-500'>
+      <Container>
+        <nav className='flex'>
+          <div className='mr-4'>
+            <Link to='/'>
+              <Logo width='70px'   />
 
-    return (
-        Admin == false ? <AdminHeader /> : <UserHeader />
-    );
+              </Link>
+          </div>
+          <ul className='flex ml-auto'>
+            {navItems.map((item) => 
+            item.active ? (
+              <li key={item.name}>
+                <button
+                onClick={() => navigate(item.slug)}
+                className='inline-bock px-6 py-2 duration-200 hover:bg-blue-100 rounded-full'
+                >{item.name}</button>
+              </li>
+            ) : null
+            )}
+            {authStatus && (
+              <li>
+                <LogoutBtn />
+              </li>
+            )}
+          </ul>
+        </nav>
+        </Container>
+    </header>
+  )
 }
 
-export default Header;
+export default Header
