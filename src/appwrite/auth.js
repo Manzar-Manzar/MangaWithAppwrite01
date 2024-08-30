@@ -39,7 +39,6 @@ export class AuthService {
         try {
             return await this.account.get();
         } catch (error) {
-            console.log(`Appwrite getCurrentUser error: ${error}`);
         }
         return null;
     }
@@ -52,18 +51,18 @@ export class AuthService {
         }
     }
 
-    async admin(userData) {
-  try {
-    if (userData.labels.includes('admin')) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (err) {
-    console.log(`Admin check error: ${err}`);
-    return false;
-  }
-}
+//     async admin(userData) {
+//   try {
+//     if (userData.labels.includes('admin')) {
+//       return true;
+//     } else {
+//       return false;
+//     }
+//   } catch (err) {
+//     console.log(`Admin check error: ${err}`);
+//     return false;
+//   }
+// }
 
 }
 

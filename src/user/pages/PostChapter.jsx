@@ -6,7 +6,7 @@ import parse from "html-react-parser";
 import { useSelector } from "react-redux";
 
 export default function Post() {
-    const [manga, setManga] = useState(null);
+    const [mangaChapter, setMangaChapter] = useState(null);
     const { slug } = useParams();
     const navigate = useNavigate();
 
@@ -16,17 +16,17 @@ export default function Post() {
 
     useEffect(() => {
         if (slug) {
-            appwriteService.getManga(slug).then((manga) => {
-                if (manga) setManga(manga);
+            appwriteService.getMangaChapters(slug).then((mangaChapter) => {
+                if (mangaChapter) setMangaChapter(mangaChapter);
                 else navigate("/");
             });
         } else navigate("/");
     }, [slug, navigate]);
 
-    const deleteManga = () => {
-        appwriteService.deleteManga(manga.$id).then((status) => {
+    const deleteChapter = () => {
+        appwriteService.deleteChapter(mangaChapter.$id).then((status) => {
             if (status) {
-                appwriteService.deleteManga(manga.coverImage);
+                appwriteService.deleteChapter(mangaChapter.coverImage);
                 navigate("/");
             }
         });
@@ -37,29 +37,29 @@ export default function Post() {
             <Container>
                 <div className="w-full flex justify-center mb-4 relative border rounded-xl p-2">
                     <img
-                        src={appwriteService.getFilePreview(manga.coverImage)}
-                        alt={manga.title}
+                        src={appwriteService.getChapterFilePreview(manga.coverImage)}
+                        alt={mangaChapter.title}
                         className="rounded-xl"
                     />
 
-
-                    <div className="absolute right-6 top-6">
-                        <Link to={`/edit-manga/${manga.$id}`}>
-                            <Button bgColor="bg-green-500" className="mr-3">
-                                Edit
+                    
+                        <div className="absolute right-6 top-6">
+                            <Link to={`/edit-manga/${mangaChapter.$id}`}>
+                                <Button bgColor="bg-green-500" className="mr-3">
+                                    Edit
+                                </Button>
+                            </Link>
+                            <Button bgColor="bg-red-500" onClick={deleteChapter}>
+                                Delete
                             </Button>
-                        </Link>
-                        <Button bgColor="bg-red-500" onClick={deleteManga}>
-                            Delete
-                        </Button>
-                    </div>
+                        </div>
                 </div>
                 <div className="w-full mb-6">
-                    <h1 className="text-2xl font-bold">{manga.title}</h1>
+                    <h1 className="text-2xl font-bold">{mangaChapter.title}</h1>
                 </div>
                 <div className="browser-css">
-                    {parse(manga.content)}
-                </div>
+                    {parse(manga.Chapter)}
+                    </div>
             </Container>
         </div>
     ) : null;

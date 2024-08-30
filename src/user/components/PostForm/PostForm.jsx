@@ -9,8 +9,9 @@ export default function PostForm({ post }) {
     const { register, handleSubmit, watch, setValue, control, getValues } = useForm({
         defaultValues: {
             title: post?.title || "",
-            slug: post?.$id || "",
+            slug: post?.slug || "",
             content: post?.content || "",
+            author: post?.author || "",
             status: post?.status || "active",
         },
     });
@@ -88,9 +89,15 @@ export default function PostForm({ post }) {
                         setValue("slug", slugTransform(e.currentTarget.value), { shouldValidate: true });
                     }}
                 />
-                <RTE label="Content :" name="content" control={control} defaultValue={getValues("content")} />
+                <Input
+                    label="Author :"
+                    placeholder="author"
+                    className="mb-4"
+                    {...register("author", { required: true })}
+                />
             </div>
-            <div className="w-1/3 px-2">
+            
+            <div className="w-1/3 px-2 h-full">
                 <Input
                     label="cover Image :"
                     type="file"

@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react'
-import {Container, PostForm} from '../index'
+import {Container, PostManga} from '../index'
 import appwriteService from "../../../appwrite/config";
-import MangaCard from "../MangaCard"
 
 function Home() {
     const [mangas, setMangas] = useState([])

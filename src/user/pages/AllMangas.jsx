@@ -15,9 +15,9 @@ function AllMangas() {
     <div className='w-full py-8'>
         <Container>
             <div className='flex flex-wrap'>
-                {mangas.map((post) => (
+                {mangas.map((manga) => (
                     <div key={manga.$id} className='p-2 w-1/4'>
-                        <PostCard {...manga} />
+                        <PostManga {...manga} />
                     </div>
                 ))}
             </div>

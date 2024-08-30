@@ -1,18 +1,18 @@
 import React, {useEffect, useState} from 'react'
 import appwriteService from "../../appwrite/config"
-import { Container, PostForm } from "../components"
+import { Container, ChapterPostForm } from "../components"
 import { useNavigate,  useParams } from 'react-router-dom';
 
-function EditMangas() {
-    const [manga, setMangas] = useState(null)
+function EditChapter() {
+    const [mangaChapter, setMangaChapters] = useState(null)
     const {slug} = useParams()
     const navigate = useNavigate()
 
     useEffect(() => {
         if (slug) {
-            appwriteService.getManga(slug).then((manga) => {
-                if (manga) {
-                    setMangas(manga)
+            appwriteService.getMangaChapters(slug).then((mangaChapter) => {
+                if (mangaChapter) {
+                    setMangaChapters(mangaChapter)
                 }
             })
         } else {
@@ -22,10 +22,10 @@ function EditMangas() {
   return post ? (
     <div className='py-8'>
         <Container>
-            <PostForm manga={manga} />
+            <ChapterPostForm mangaChapter={mangaChapter} />
         </Container>
     </div>
   ) : null
 }
 
-export default EditMangas
+export default EditChapter

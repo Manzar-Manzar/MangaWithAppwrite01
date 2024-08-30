@@ -19,7 +19,7 @@ export class Service {
         try {
             return await this.databases.createDocument(
                 conf.appwriteDatabaseId,
-                conf.appwriteMangaCollectionId, // Updated to a more specific collection ID
+                conf.appwriteCollectionId, // Updated to a more specific collection ID
                 slug,
                 {
                     title,
@@ -37,7 +37,7 @@ export class Service {
         try {
             return await this.databases.updateDocument(
                 conf.appwriteDatabaseId,
-                conf.appwriteMangaCollectionId,
+                conf.appwriteCollectionId,
                 slug,
                 {
                     title,
@@ -55,7 +55,7 @@ export class Service {
         try {
             await this.databases.deleteDocument(
                 conf.appwriteDatabaseId,
-                conf.appwriteMangaCollectionId,
+                conf.appwriteCollectionId,
                 slug
             );
         } catch (error) {
@@ -67,7 +67,7 @@ export class Service {
         try {
             return await this.databases.getDocument(
                 conf.appwriteDatabaseId,
-                conf.appwriteMangaCollectionId,
+                conf.appwriteCollectionId,
                 slug
             );
         } catch (error) {
@@ -80,7 +80,7 @@ export class Service {
         try {
             return await this.databases.listDocuments(
                 conf.appwriteDatabaseId,
-                conf.appwriteMangaCollectionId,
+                conf.appwriteCollectionId,
                 [
                     Query.orderAsc('title')
                 ]
@@ -91,23 +91,62 @@ export class Service {
     }
 
     // Chapter Methods
-    async createChapter({ mangaId, chapterNumber, title, content }) {
+
+    async getMangaChapters() {
         try {
+            return await this.databases.listDocuments(
+                conf.appwriteDatabaseId,
+                conf.appwriteChapterCollectionId,
+                [
+                    Query.orderAsc('$createdAt')
+                ]
+            );
+        } catch (error) {
+            console.log(`Appwrite getMangaChapters error: ${error}`);
+        }
+    }
+
+    
+    async createChapter({ title, slug, chapterNumber, content, chapterId }) {
+        try {
+            // Debugging log to check all parameters
+            console.log('Creating chapter with:', { title, slug, chapterNumber, content, chapterId });
+    
+            // Ensure chapterId is defined and valid
+            if (!chapterId) {
+                throw new Error("chapterId is required but is missing or undefined.");
+            }
+    
+            // Convert chapterId to integer just in case it's passed as a string
+            chapterId = parseInt(chapterId);
+            if (isNaN(chapterId)) {
+                throw new Error("chapterId must be a valid integer.");
+            }
+    
+            // Ensure chapterNumber is an integer
+            chapterNumber = parseInt(chapterNumber);
+            if (isNaN(chapterNumber)) {
+                throw new Error("chapterNumber must be a valid integer.");
+            }
+    
             return await this.databases.createDocument(
                 conf.appwriteDatabaseId,
                 conf.appwriteChapterCollectionId,
-                ID.unique(),
+                slug, // Ensure slug is unique, or use ID.unique() for auto ID generation
                 {
-                    mangaId,
-                    chapterNumber,
                     title,
-                    content
+                    chapterNumber,
+                    content,
+                    chapterId,
                 }
             );
         } catch (error) {
             console.log(`Appwrite createChapter error: ${error}`);
         }
     }
+    
+    
+    
 
     async updateChapter(chapterId, { title, content }) {
         try {
@@ -151,13 +190,13 @@ export class Service {
         }
     }
 
-    async getChapters(mangaId) {
+    async getChapters(chapterId) {
         try {
             return await this.databases.listDocuments(
                 conf.appwriteDatabaseId,
                 conf.appwriteChapterCollectionId,
                 [
-                    Query.equal('mangaId', mangaId),
+                    Query.equal('chapterId', chapterId),
                     Query.orderAsc('chapterNumber')
                 ]
             );
@@ -196,6 +235,13 @@ export class Service {
     getFilePreview(fileId) {
         return this.bucket.getFilePreview(
             conf.appwriteBucketId,
+            fileId
+        );
+    }
+
+    getChapterFilePreview(fileId) {
+        return this.bucket.getFilePreview(
+            conf.appwriteChapterBucketId,
             fileId
         );
     }

@@ -10,6 +10,7 @@ export default function ChapterPostForm({ post }) {
         defaultValues: {
             title: post?.title || "",
             slug: post?.$id || "",
+            chapterNumber: post?.chapterNumber || "",
             content: post?.content || "",
             status: post?.status || "active",
         },
@@ -20,27 +21,27 @@ export default function ChapterPostForm({ post }) {
 
     const submit = async (data) => {
         if (post) {
-            const file = data.image[0] ? await appwriteService.uploadFile(data.image[0]) : null;
+            const file = data.image[0] ? await appwriteService.uploadChapter(data.image[0]) : null;
 
             if (file) {
-                appwriteService.deleteManga(post.coverImage);
+                appwriteService.deleteChapter(post.content);
             }
 
-            const dbPost = await appwriteService.updateManga(post.$id, {
+            const dbPost = await appwriteService.updateChapter(post.$id, {
                 ...data,
-                coverImage: file ? file.$id : undefined,
+                content: file ? file.$id : undefined,
             });
 
             if (dbPost) {
                 navigate(`/post/${dbPost.$id}`);
             }
         } else {
-            const file = await appwriteService.uploadFile(data.image[0]);
+            const file = await appwriteService.uploadChapter(data.image[0]);
 
             if (file) {
                 const fileId = file.$id;
-                data.coverImage = fileId;
-                const dbPost = await appwriteService.createManga({ ...data, userId: userData.$id });
+                data.content = fileId;
+                const dbPost = await appwriteService.createChapter({ ...data, chapterId: userData.$id });
 
                 if (dbPost) {
                     navigate(`/post/${dbPost.$id}`);
@@ -88,11 +89,27 @@ export default function ChapterPostForm({ post }) {
                         setValue("slug", slugTransform(e.currentTarget.value), { shouldValidate: true });
                     }}
                 />
-                <RTE label="Content :" name="content" control={control} defaultValue={getValues("content")} />
+                <Input
+  label="Chapter"
+  placeholder="Chapter Number"
+  className="mb-4"
+  {...register("chapterNumber", { 
+    required: true, 
+    valueAsNumber: true,  // Ensures that input is handled as a number
+    validate: (value) => !isNaN(value) || "Must be a number",  // Validation to check it's a number
+  })}
+  onInput={(e) => {
+    const value = e.currentTarget.value;
+    setValue("slug", slugTransform(value), { shouldValidate: true });
+  }}
+/>
+
+
+
             </div>
             <div className="w-1/3 px-2">
                 <Input
-                    label="cover Image :"
+                    label="Chapter :"
                     type="file"
                     className="mb-4"
                     accept="image/png, image/jpg, image/jpeg, image/gif"
@@ -101,7 +118,7 @@ export default function ChapterPostForm({ post }) {
                 {post && (
                     <div className="w-full mb-4">
                         <img
-                            src={appwriteService.getFilePreview(post.coverImage)}
+                            src={appwriteService.getChapter(post.content)}
                             alt={post.title}
                             className="rounded-lg"
                         />

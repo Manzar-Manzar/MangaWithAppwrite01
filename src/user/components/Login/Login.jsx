@@ -15,22 +15,15 @@ function Login() {
   const login = async(data) => {
     setError("")
     try {
-        const session = await authService.login(data); // Attempt login
-        if (session) {
-          const userData = await authService.getCurrentUser(); // Get current user after login
-          if (userData) {
-            const isAdmin = await authService.admin(userData); // Check if user is admin (update this function to return boolean)
-            if (isAdmin) {
-              navigate("/contact"); // Navigate to admin page if user is admin
-            } else {
-              navigate("/"); // Navigate to user dashboard otherwise
-            }
-            dispatch(authLogin(userData)); // Update Redux store with user data
-          }
-        }
-      } catch (error) {
-        setError(error.message); // Set error message if login fails
+      const session = await authService.login(data)
+      if (session) {
+          const userData = await authService.getCurrentUser()
+          if(userData) dispatch(authLogin(userData));
+          navigate("/")
       }
+  } catch (error) {
+      setError(error.message)
+  }
 }
 
 

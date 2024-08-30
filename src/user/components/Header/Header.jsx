@@ -9,26 +9,26 @@ function Header() {
   const navigate = useNavigate()
 
   const navItems = [
-    {
-        name: 'Home',
-        slug: "/",
-        active: true
-    },
-    {
-        name: "Browse",
-        slug: "/browse",
-        active: authStatus,
-    },
-    {
-        name: "About",
-        slug: "/about",
-        active: true,
-    },
-    {
-        name: "Contact",
-        slug: "/contact",
-        active: true,
-    },
+    // {
+    //     name: 'Home',
+    //     slug: "/",
+    //     active: true
+    // },
+    // {
+    //     name: "Browse",
+    //     slug: "/browse",
+    //     active: authStatus,
+    // },
+    // {
+    //     name: "About",
+    //     slug: "/about",
+    //     active: true,
+    // },
+    // {
+    //     name: "Contact",
+    //     slug: "/contact",
+    //     active: true,
+    // },
     {
         name: "Login",
         slug: "/login",
@@ -41,37 +41,22 @@ function Header() {
     },
     {
         name: "All mangas",
-        slug:"/mangas",
+        slug:"/all-mangas",
         active: true,
     },
     {
-        name: "Add mangas", // When clicked on the manga card, there should be add, update chapter, and delete chapter
-        slug:"/mangas",
+        name: "All chapters",
+        slug:"/all-chapters",
         active: true,
     },
     {
-        name: "Update Manga", // to update the manga title and other details
-        slug:"/updateManga",
-        active: true,
-    },
-    {
-        name: "Delete Manga",
-        slug:"/deleteManga",
+        name: "Add manga", // When clicked on the manga card, there should be add, update chapter, and delete chapter
+        slug:"/add-manga",
         active: true,
     },
     {
         name: "Add Chapter",
-        slug:"/addChapter",
-        active: true,
-    },
-    {
-        name: "Update Chapter",
-        slug:"/updateChapter",
-        active: true,
-    },
-    {
-        name: "Delete Chapter",
-        slug:"/deleteChapter",
+        slug:"/add-chapter",
         active: true,
     },
   ]

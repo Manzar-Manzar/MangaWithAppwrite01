@@ -1,11 +1,11 @@
 import React from 'react'
-import { Container, PostManga } from "../components"
+import { Container, PostForm } from "../components"
 
 function AddManga() {
   return (
     <div className='py-8'>
         <Container>
-            <PostManga />
+            <PostForm />
         </Container>
     </div>
   )
